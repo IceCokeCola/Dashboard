@@ -171,17 +171,10 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
         sliceTextValue = getSliceText()
 
-        calculateCenterX()
-
-//        viewWidth = radius * 2 + paddingStart + paddingEnd
-//        viewHeight = radius * 2 + paddingTop + paddingBottom
-//        centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
-//        centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
-
         currentAngle = getAngleFromValue(currentValue)
     }
 
-    private fun calculateCenterX() {
+    private fun calculateCenter() {
         centerX = 0f
         centerY = 0f
         val xList = ArrayList<Float>()
@@ -216,10 +209,10 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         yList.sort()
         Log.e("xiaolong", "xList: $xList")
         Log.e("xiaolong", "yList: $yList")
-        viewWidth = (xList[xList.size - 1] - xList[0]).toInt()
-        viewHeight = (yList[yList.size - 1] - yList[0]).toInt()
-        centerX = -xList[0]
-        centerY = -yList[0]
+        viewWidth = (xList[xList.size - 1] - xList[0]).toInt() + paddingStart + paddingEnd
+        viewHeight = (yList[yList.size - 1] - yList[0]).toInt() + paddingTop + paddingBottom
+        centerX = -xList[0] + paddingStart
+        centerY = -yList[0] + paddingTop
     }
 
     private fun getSliceText(): Array<String> {
@@ -247,26 +240,7 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-//        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-//        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-//        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-//        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-//
-//        if (widthMode == MeasureSpec.EXACTLY) {
-//            viewWidth = widthSize
-//        } else if (widthMode == MeasureSpec.AT_MOST) {
-//            viewWidth = min(viewWidth, widthSize)
-//        }
-//
-//        if (heightMode == MeasureSpec.EXACTLY) {
-//            viewHeight = heightSize
-//        } else if (heightMode == MeasureSpec.AT_MOST) {
-//            viewHeight = min(viewHeight, heightSize)
-//        }
-//
-//        centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
-//        centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
-
+        calculateCenter()
         setMeasuredDimension(viewWidth, viewHeight)
     }
 
