@@ -207,8 +207,6 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         yList.add(point2[1])
         xList.sort()
         yList.sort()
-        Log.e("xiaolong", "xList: $xList")
-        Log.e("xiaolong", "yList: $yList")
         viewWidth = (xList[xList.size - 1] - xList[0]).toInt() + paddingStart + paddingEnd
         viewHeight = (yList[yList.size - 1] - yList[0]).toInt() + paddingTop + paddingBottom
         centerX = -xList[0] + paddingStart

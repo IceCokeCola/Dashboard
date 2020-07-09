@@ -4,25 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
     <com.icecoke.dashboard.Dashboard
         android:id="@+id/dashboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/black"
+        android:padding="10dp"
+        app:bigSliceCount="12"
+        app:currentValue="90"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:minValue="0"
-        app:bigSliceCount="12"
-        app:currentValue="90"
-        app:valueTextSize="48sp"
-        app:unitText="KM/H"
         app:maxValue="240"
+        app:minValue="0"
+        app:radius="150dp"
         app:startAngle="150"
         app:sweepAngle="240"
-        app:radius="150dp" />
+        app:unitText="KM/H"
+        app:valueTextSize="48sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
