@@ -147,12 +147,14 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     private fun initSize() {
         if (sweepAngle > 360) {
             throw IllegalArgumentException("sweepAngle must be less than 360 degree")
-        } else if (sweepAngle == 0) {
+        } else if (sweepAngle <= 0) {
             throw IllegalArgumentException("sweepAngle must be more than 0 degree")
         }
 
         if (startAngle >= 360) {
             throw IllegalArgumentException("startAngle must be less than 360 degree")
+        } else if (startAngle < 0) {
+            throw IllegalArgumentException("startAngle must be not less than 0 degree")
         }
 
         smallSliceRadius = radius - Utils.dp2px(context, 8f).toInt()
@@ -171,10 +173,10 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
         calculateCenterX()
 
-        viewWidth = radius * 2 + paddingStart + paddingEnd
-        viewHeight = radius * 2 + paddingTop + paddingBottom
-        centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
-        centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
+//        viewWidth = radius * 2 + paddingStart + paddingEnd
+//        viewHeight = radius * 2 + paddingTop + paddingBottom
+//        centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
+//        centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
 
         currentAngle = getAngleFromValue(currentValue)
     }
@@ -183,22 +185,41 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         centerX = 0f
         centerY = 0f
         val xList = ArrayList<Float>()
+        val yList = ArrayList<Float>()
         if (startAngle <= 180 && startAngle + sweepAngle >= 180) {
             xList.add(-radius.toFloat())
         }
 
-        if (startAngle >= 0 && startAngle + sweepAngle >= 360) {
+        if (startAngle == 0 || startAngle + sweepAngle >= 360) {
             xList.add(radius.toFloat())
+        }
+
+        if (startAngle <= 270 && startAngle + sweepAngle >= 270) {
+            yList.add(-radius.toFloat())
+        }
+
+        if (startAngle <= 90 && startAngle + sweepAngle >= 90) {
+            yList.add(radius.toFloat())
         }
 
         xList.add(-innerRadius)
         xList.add(innerRadius)
+        yList.add(-innerRadius)
+        yList.add(innerRadius)
         val point1 = getCoordinatePoint(radius, startAngle.toFloat())
         val point2 = getCoordinatePoint(radius, (startAngle + sweepAngle).toFloat())
         xList.add(point1[0])
         xList.add(point2[0])
+        yList.add(point1[1])
+        yList.add(point2[1])
         xList.sort()
+        yList.sort()
         Log.e("xiaolong", "xList: $xList")
+        Log.e("xiaolong", "yList: $yList")
+        viewWidth = (xList[xList.size - 1] - xList[0]).toInt()
+        viewHeight = (yList[yList.size - 1] - yList[0]).toInt()
+        centerX = -xList[0]
+        centerY = -yList[0]
     }
 
     private fun getSliceText(): Array<String> {
@@ -226,25 +247,25 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-
-        if (widthMode == MeasureSpec.EXACTLY) {
-            viewWidth = widthSize
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            viewWidth = min(viewWidth, widthSize)
-        }
-
-        if (heightMode == MeasureSpec.EXACTLY) {
-            viewHeight = heightSize
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            viewHeight = min(viewHeight, heightSize)
-        }
-
-        centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
-        centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
+//        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+//        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+//        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+//        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+//
+//        if (widthMode == MeasureSpec.EXACTLY) {
+//            viewWidth = widthSize
+//        } else if (widthMode == MeasureSpec.AT_MOST) {
+//            viewWidth = min(viewWidth, widthSize)
+//        }
+//
+//        if (heightMode == MeasureSpec.EXACTLY) {
+//            viewHeight = heightSize
+//        } else if (heightMode == MeasureSpec.AT_MOST) {
+//            viewHeight = min(viewHeight, heightSize)
+//        }
+//
+//        centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
+//        centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
 
         setMeasuredDimension(viewWidth, viewHeight)
     }
