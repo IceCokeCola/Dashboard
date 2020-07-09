@@ -3,6 +3,7 @@ package com.icecoke.dashboard
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 
 import java.lang.IllegalArgumentException
@@ -150,6 +151,10 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             throw IllegalArgumentException("sweepAngle must be more than 0 degree")
         }
 
+        if (startAngle >= 360) {
+            throw IllegalArgumentException("startAngle must be less than 360 degree")
+        }
+
         smallSliceRadius = radius - Utils.dp2px(context, 8f).toInt()
         bigSliceRadius = smallSliceRadius - Utils.dp2px(context, 4f).toInt()
         sliceTextRadius = bigSliceRadius - Utils.dp2px(context, 3f).toInt()
@@ -164,12 +169,36 @@ class Dashboard(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
         sliceTextValue = getSliceText()
 
+        calculateCenterX()
+
         viewWidth = radius * 2 + paddingStart + paddingEnd
         viewHeight = radius * 2 + paddingTop + paddingBottom
         centerX = (viewWidth.toFloat() + paddingStart - paddingEnd) / 2
         centerY = (viewHeight.toFloat() + paddingTop - paddingBottom) / 2
 
         currentAngle = getAngleFromValue(currentValue)
+    }
+
+    private fun calculateCenterX() {
+        centerX = 0f
+        centerY = 0f
+        val xList = ArrayList<Float>()
+        if (startAngle <= 180 && startAngle + sweepAngle >= 180) {
+            xList.add(-radius.toFloat())
+        }
+
+        if (startAngle >= 0 && startAngle + sweepAngle >= 360) {
+            xList.add(radius.toFloat())
+        }
+
+        xList.add(-innerRadius)
+        xList.add(innerRadius)
+        val point1 = getCoordinatePoint(radius, startAngle.toFloat())
+        val point2 = getCoordinatePoint(radius, (startAngle + sweepAngle).toFloat())
+        xList.add(point1[0])
+        xList.add(point2[0])
+        xList.sort()
+        Log.e("xiaolong", "xList: $xList")
     }
 
     private fun getSliceText(): Array<String> {
